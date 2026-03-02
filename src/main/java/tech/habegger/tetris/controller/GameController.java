@@ -2,6 +2,7 @@ package tech.habegger.tetris.controller;
 
 import tech.habegger.tetris.model.Board;
 import tech.habegger.tetris.model.Tetromino;
+import tech.habegger.tetris.util.SoundPlayer;
 
 import java.util.List;
 
@@ -49,8 +50,9 @@ public class GameController {
         currentPiece = Tetromino.createRandom(3, 0);
 
         // Check if the new piece collides with locked pieces (game over condition)
-        if (board.isAtBottom(currentPiece)) {
+        if (!board.isValidPosition(currentPiece)) {
             gameOver = true;
+            SoundPlayer.play(SoundPlayer.SoundEffect.GAME_OVER);
         }
     }
     
@@ -67,6 +69,7 @@ public class GameController {
         if (board.isAtBottom(currentPiece)) {
             // Lock the piece
             board.lockPiece(currentPiece);
+            SoundPlayer.play(SoundPlayer.SoundEffect.PIECE_LOCK);
 
             // Check for and clear completed lines
             List<Integer> completedLines = board.findCompletedLines();
@@ -74,6 +77,7 @@ public class GameController {
                 int cleared = board.clearLines(completedLines);
                 linesCleared += cleared;
                 updateScore(cleared);
+                SoundPlayer.play(SoundPlayer.SoundEffect.LINE_CLEAR);
             }
 
             // Spawn a new piece
