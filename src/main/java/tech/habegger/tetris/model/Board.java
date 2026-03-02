@@ -204,19 +204,27 @@ public class Board {
             return 0;
         }
 
-        // Create a mutable copy and sort in descending order to clear from bottom to top
-        List<Integer> sortedLines = new ArrayList<>(lines);
-        sortedLines.sort((a, b) -> b - a);
+        // Create a new grid with non-completed lines
+        Color[][] newGrid = new Color[HEIGHT][WIDTH];
+        int newRow = HEIGHT - 1; // Start from bottom of new grid
 
-        for (int line : sortedLines) {
-            // Remove the completed line
-            for (int row = line; row > 0; row--) {
-                // Shift all rows above down by one
-                grid[row] = grid[row - 1].clone();
+        // Copy non-completed lines from bottom to top
+        for (int oldRow = HEIGHT - 1; oldRow >= 0; oldRow--) {
+            if (!lines.contains(oldRow)) {
+                // This row is not completed, copy it to new grid
+                newGrid[newRow] = grid[oldRow].clone();
+                newRow--;
             }
-            // Clear the top row
-            grid[0] = new Color[WIDTH];
         }
+
+        // Fill remaining top rows with empty rows
+        while (newRow >= 0) {
+            newGrid[newRow] = new Color[WIDTH];
+            newRow--;
+        }
+
+        // Replace the grid
+        grid = newGrid;
 
         return lines.size();
     }

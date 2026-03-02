@@ -274,5 +274,40 @@ class BoardTest {
         // Then
         assertEquals(0, cleared, "Should clear 0 lines");
     }
+
+    @Test
+    @DisplayName("Should clear multiple lines correctly")
+    void testClearMultipleLines() {
+        // Given - fill bottom 3 rows completely, with a gap in row 17
+        for (int row = Board.HEIGHT - 3; row < Board.HEIGHT; row++) {
+            for (int col = 0; col < Board.WIDTH; col++) {
+                board.getGrid()[row][col] = Color.RED;
+            }
+        }
+        // Add a piece above the completed lines
+        board.getGrid()[Board.HEIGHT - 4][0] = Color.BLUE;
+        board.getGrid()[Board.HEIGHT - 4][1] = Color.BLUE;
+
+        List<Integer> linesToClear = List.of(Board.HEIGHT - 3, Board.HEIGHT - 2, Board.HEIGHT - 1);
+
+        // When
+        int cleared = board.clearLines(linesToClear);
+
+        // Then
+        assertEquals(3, cleared, "Should clear 3 lines");
+
+        // Check that the blue pieces shifted down to the bottom
+        assertEquals(Color.BLUE, board.getCell(Board.HEIGHT - 1, 0),
+            "Blue piece should have shifted down to bottom row");
+        assertEquals(Color.BLUE, board.getCell(Board.HEIGHT - 1, 1),
+            "Blue piece should have shifted down to bottom row");
+
+        // Check that top rows are empty
+        for (int col = 0; col < Board.WIDTH; col++) {
+            assertNull(board.getCell(0, col), "Top row should be empty");
+            assertNull(board.getCell(1, col), "Second row should be empty");
+            assertNull(board.getCell(2, col), "Third row should be empty");
+        }
+    }
 }
 
