@@ -131,11 +131,18 @@ public class Tetromino {
     
     /**
      * Sets the y-coordinate position.
-     * 
+     *
      * @param y the new y-coordinate
      */
     public void setY(int y) {
         this.y = y;
+    }
+
+    /**
+     * Moves the tetromino down by one row.
+     */
+    public void moveDown() {
+        this.y++;
     }
 }
 
