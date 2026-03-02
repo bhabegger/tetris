@@ -56,18 +56,87 @@ Run tests with coverage:
 mvn verify
 ```
 
-## Controls
+## How to Play
 
-- **← →** - Move piece left/right
-- **↓** - Soft drop (faster descent)
-- **↑ or X** - Rotate piece clockwise
+### Objective
+Stack falling tetromino pieces to create complete horizontal lines. When a line is completed, it disappears and you earn points. The game ends when pieces stack up to the top of the board.
 
-## Scoring
+### Game Interface
 
-- 1 line = 100 points
-- 2 lines = 300 points
-- 3 lines = 500 points
-- 4 lines (Tetris) = 800 points
+The game window consists of two main sections:
+
+**Left Side - Game Board (300×600 pixels)**
+- 10 columns × 20 rows grid
+- Black background with dark gray grid lines
+- Colored tetromino pieces (current falling piece + locked pieces)
+
+**Right Side - Scoreboard Panel (200×600 pixels)**
+- **SCORE** - Current score (starts at 0)
+- **LINES** - Total lines cleared
+- **LEVEL** - Current level (increases every 10 lines)
+- **CONTROLS** - Quick reference guide
+- **GAME OVER** - Red message when game ends
+
+### Controls
+
+| Key | Action |
+|-----|--------|
+| **←** (Left Arrow) | Move piece left |
+| **→** (Right Arrow) | Move piece right |
+| **↓** (Down Arrow) | Soft drop (move down faster) |
+| **↑** (Up Arrow) or **X** | Rotate piece clockwise |
+
+**Tips:**
+- Hold down arrow keys for continuous movement
+- Rotation is validated - invalid rotations are automatically cancelled
+- Soft drop speeds up descent but doesn't instantly drop the piece
+
+### Tetromino Pieces
+
+All 7 classic pieces with unique colors:
+
+| Piece | Color | Shape | Blocks |
+|-------|-------|-------|--------|
+| **I** | Cyan | Straight line | 4 |
+| **O** | Yellow | Square | 2×2 |
+| **T** | Purple | T-shape | 4 |
+| **S** | Green | S-shape | 4 |
+| **Z** | Red | Z-shape | 4 |
+| **J** | Blue | J-shape | 4 |
+| **L** | Orange | L-shape | 4 |
+
+### Scoring System
+
+Points are awarded based on lines cleared simultaneously:
+
+| Lines Cleared | Points | Name |
+|---------------|--------|------|
+| 1 line | 100 | Single |
+| 2 lines | 300 | Double |
+| 3 lines | 500 | Triple |
+| 4 lines | 800 | **Tetris** |
+
+**Level Progression:** Level = (Lines Cleared ÷ 10) + 1
+
+### Sound Effects
+
+- **Single beep** - Piece locks at bottom
+- **Double beep** - Line(s) cleared
+- **Descending beeps** - Game over
+
+### Tips and Strategies
+
+**For Beginners:**
+- Take your time - pieces fall every 0.5 seconds
+- Avoid gaps - stack pieces without leaving empty spaces
+- Use the walls for precise placement
+- Plan ahead for the next piece
+
+**Advanced Techniques:**
+- Save I-pieces to clear 4 lines at once (Tetris) for maximum points
+- Keep the top of your stack as level as possible
+- Create wells - leave a vertical gap for I-pieces
+- Rotate pieces early while they're falling
 
 ## Project Structure
 
