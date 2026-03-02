@@ -114,19 +114,58 @@ class TetrominoTest {
         // Given
         int newX = 5;
         int newY = 10;
-        
+
         // When
         lPiece.setX(newX);
         lPiece.setY(newY);
-        
+
         // Then
         assertEquals(newX, lPiece.getX(), "X position should be updated");
         assertEquals(newY, lPiece.getY(), "Y position should be updated");
     }
-    
+
+    @Test
+    @DisplayName("Should move piece down")
+    void testMoveDown() {
+        // Given
+        int originalY = lPiece.getY();
+
+        // When
+        lPiece.moveDown();
+
+        // Then
+        assertEquals(originalY + 1, lPiece.getY(), "Y position should increase by 1");
+    }
+
+    @Test
+    @DisplayName("Should move piece left")
+    void testMoveLeft() {
+        // Given
+        int originalX = lPiece.getX();
+
+        // When
+        lPiece.moveLeft();
+
+        // Then
+        assertEquals(originalX - 1, lPiece.getX(), "X position should decrease by 1");
+    }
+
+    @Test
+    @DisplayName("Should move piece right")
+    void testMoveRight() {
+        // Given
+        int originalX = lPiece.getX();
+
+        // When
+        lPiece.moveRight();
+
+        // Then
+        assertEquals(originalX + 1, lPiece.getX(), "X position should increase by 1");
+    }
+
     /**
      * Helper method to create a deep copy of a 2D array.
-     * 
+     *
      * @param original the original array to copy
      * @return a deep copy of the array
      */

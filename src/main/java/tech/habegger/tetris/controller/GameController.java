@@ -63,11 +63,55 @@ public class GameController {
     }
     
     /**
-     * Rotates the current piece.
+     * Rotates the current piece if the rotation is valid.
      */
     public void rotatePiece() {
         if (!gameOver && currentPiece != null) {
             currentPiece.rotate();
+            // If rotation causes collision, rotate back
+            if (!board.isValidPosition(currentPiece)) {
+                // Rotate back 3 times (equivalent to rotating back once)
+                currentPiece.rotate();
+                currentPiece.rotate();
+                currentPiece.rotate();
+            }
+        }
+    }
+
+    /**
+     * Moves the current piece left if the move is valid.
+     */
+    public void moveLeft() {
+        if (!gameOver && currentPiece != null) {
+            currentPiece.moveLeft();
+            // If move causes collision, move back
+            if (!board.isValidPosition(currentPiece)) {
+                currentPiece.moveRight();
+            }
+        }
+    }
+
+    /**
+     * Moves the current piece right if the move is valid.
+     */
+    public void moveRight() {
+        if (!gameOver && currentPiece != null) {
+            currentPiece.moveRight();
+            // If move causes collision, move back
+            if (!board.isValidPosition(currentPiece)) {
+                currentPiece.moveLeft();
+            }
+        }
+    }
+
+    /**
+     * Moves the current piece down faster (soft drop).
+     */
+    public void softDrop() {
+        if (!gameOver && currentPiece != null) {
+            if (!board.isAtBottom(currentPiece)) {
+                currentPiece.moveDown();
+            }
         }
     }
     

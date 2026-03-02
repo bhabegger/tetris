@@ -144,5 +144,19 @@ public class Tetromino {
     public void moveDown() {
         this.y++;
     }
+
+    /**
+     * Moves the tetromino left by one column.
+     */
+    public void moveLeft() {
+        this.x--;
+    }
+
+    /**
+     * Moves the tetromino right by one column.
+     */
+    public void moveRight() {
+        this.x++;
+    }
 }
 
