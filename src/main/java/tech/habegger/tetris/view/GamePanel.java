@@ -1,5 +1,7 @@
 package tech.habegger.tetris.view;
 
+import tech.habegger.tetris.controller.GameController;
+import tech.habegger.tetris.model.Board;
 import tech.habegger.tetris.model.Tetromino;
 
 import javax.swing.JPanel;
@@ -26,57 +28,52 @@ public class GamePanel extends JPanel {
     
     /** The height of the game board in cells */
     private static final int BOARD_HEIGHT = 20;
-    
-    /** The current tetromino piece being displayed */
-    private Tetromino currentPiece;
-    
+
+    /** The game controller */
+    private GameController gameController;
+
     /**
      * Creates a new GamePanel with the specified dimensions.
      * Sets up the panel size based on board dimensions and cell size.
+     *
+     * @param gameController the game controller managing game state
      */
-    public GamePanel() {
+    public GamePanel(GameController gameController) {
+        this.gameController = gameController;
         setPreferredSize(new Dimension(
             BOARD_WIDTH * CELL_SIZE,
             BOARD_HEIGHT * CELL_SIZE
         ));
         setBackground(Color.BLACK);
-        
-        // Create an L-piece in the center of the board
-        currentPiece = Tetromino.createLPiece(3, 8);
     }
-    
+
     /**
-     * Sets the current tetromino piece to be displayed.
-     * 
-     * @param piece the tetromino to display
+     * Gets the game controller.
+     *
+     * @return the game controller
      */
-    public void setCurrentPiece(Tetromino piece) {
-        this.currentPiece = piece;
-    }
-    
-    /**
-     * Gets the current tetromino piece.
-     * 
-     * @return the current tetromino
-     */
-    public Tetromino getCurrentPiece() {
-        return currentPiece;
+    public GameController getGameController() {
+        return gameController;
     }
     
     /**
      * Custom paint method to render the game board and tetromino.
-     * 
+     *
      * @param g the Graphics object to paint with
      */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        
+
         // Draw the grid
         drawGrid(g2d);
-        
+
+        // Draw locked pieces on the board
+        drawLockedPieces(g2d);
+
         // Draw the current piece
+        Tetromino currentPiece = gameController.getCurrentPiece();
         if (currentPiece != null) {
             drawTetromino(g2d, currentPiece);
         }
@@ -84,20 +81,48 @@ public class GamePanel extends JPanel {
     
     /**
      * Draws the game board grid.
-     * 
+     *
      * @param g2d the Graphics2D object to draw with
      */
     private void drawGrid(Graphics2D g2d) {
         g2d.setColor(Color.DARK_GRAY);
-        
+
         // Draw vertical lines
         for (int x = 0; x <= BOARD_WIDTH; x++) {
             g2d.drawLine(x * CELL_SIZE, 0, x * CELL_SIZE, BOARD_HEIGHT * CELL_SIZE);
         }
-        
+
         // Draw horizontal lines
         for (int y = 0; y <= BOARD_HEIGHT; y++) {
             g2d.drawLine(0, y * CELL_SIZE, BOARD_WIDTH * CELL_SIZE, y * CELL_SIZE);
+        }
+    }
+
+    /**
+     * Draws all locked pieces on the board.
+     *
+     * @param g2d the Graphics2D object to draw with
+     */
+    private void drawLockedPieces(Graphics2D g2d) {
+        Board board = gameController.getBoard();
+        Color[][] grid = board.getGrid();
+
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[row].length; col++) {
+                Color color = grid[row][col];
+                if (color != null) {
+                    int x = col * CELL_SIZE;
+                    int y = row * CELL_SIZE;
+
+                    // Fill the block with color
+                    g2d.setColor(color);
+                    g2d.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+
+                    // Draw a border around the block
+                    g2d.setColor(color.darker());
+                    g2d.drawRect(x, y, CELL_SIZE - 1, CELL_SIZE - 1);
+                }
+            }
         }
     }
     
