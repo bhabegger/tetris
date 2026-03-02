@@ -1,6 +1,7 @@
 package tech.habegger.tetris.model;
 
 import java.awt.Color;
+import java.util.Random;
 
 /**
  * Represents a Tetromino piece in the Tetris game.
@@ -39,22 +40,44 @@ public class Tetromino {
         this.color = color;
     }
     
+    /** Random number generator for creating random pieces */
+    private static final Random RANDOM = new Random();
+
     /**
      * Creates an L-shaped tetromino at the specified position.
      * The L-piece is orange and positioned at the given coordinates.
-     * 
+     *
      * @param x the initial x-coordinate position
      * @param y the initial y-coordinate position
      * @return a new L-shaped Tetromino
      */
     public static Tetromino createLPiece(int x, int y) {
-        int[][] lShape = {
-            {0, 0, 1, 0},
-            {0, 0, 1, 0},
-            {0, 0, 1, 1},
-            {0, 0, 0, 0}
-        };
-        return new Tetromino(lShape, x, y, Color.ORANGE);
+        return createPiece(TetrominoType.L, x, y);
+    }
+
+    /**
+     * Creates a tetromino of the specified type at the given position.
+     *
+     * @param type the type of tetromino to create
+     * @param x the initial x-coordinate position
+     * @param y the initial y-coordinate position
+     * @return a new Tetromino of the specified type
+     */
+    public static Tetromino createPiece(TetrominoType type, int x, int y) {
+        return new Tetromino(type.getShape(), x, y, type.getColor());
+    }
+
+    /**
+     * Creates a random tetromino at the specified position.
+     *
+     * @param x the initial x-coordinate position
+     * @param y the initial y-coordinate position
+     * @return a new random Tetromino
+     */
+    public static Tetromino createRandom(int x, int y) {
+        TetrominoType[] types = TetrominoType.values();
+        TetrominoType randomType = types[RANDOM.nextInt(types.length)];
+        return createPiece(randomType, x, y);
     }
     
     /**

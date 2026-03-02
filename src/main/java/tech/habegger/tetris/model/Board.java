@@ -1,6 +1,8 @@
 package tech.habegger.tetris.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the Tetris game board.
@@ -156,6 +158,75 @@ public class Board {
         }
 
         return true;
+    }
+
+    /**
+     * Finds all completed lines on the board.
+     * A line is complete when all cells in the row are filled.
+     *
+     * @return list of row indices that are complete (from top to bottom)
+     */
+    public List<Integer> findCompletedLines() {
+        List<Integer> completedLines = new ArrayList<>();
+
+        for (int row = 0; row < HEIGHT; row++) {
+            if (isLineComplete(row)) {
+                completedLines.add(row);
+            }
+        }
+
+        return completedLines;
+    }
+
+    /**
+     * Checks if a specific line is complete.
+     *
+     * @param row the row index to check
+     * @return true if all cells in the row are filled, false otherwise
+     */
+    private boolean isLineComplete(int row) {
+        for (int col = 0; col < WIDTH; col++) {
+            if (grid[row][col] == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Clears the specified lines and shifts rows above down.
+     *
+     * @param lines list of row indices to clear
+     * @return the number of lines cleared
+     */
+    public int clearLines(List<Integer> lines) {
+        if (lines.isEmpty()) {
+            return 0;
+        }
+
+        // Create a new grid with non-completed lines
+        Color[][] newGrid = new Color[HEIGHT][WIDTH];
+        int newRow = HEIGHT - 1; // Start from bottom of new grid
+
+        // Copy non-completed lines from bottom to top
+        for (int oldRow = HEIGHT - 1; oldRow >= 0; oldRow--) {
+            if (!lines.contains(oldRow)) {
+                // This row is not completed, copy it to new grid
+                newGrid[newRow] = grid[oldRow].clone();
+                newRow--;
+            }
+        }
+
+        // Fill remaining top rows with empty rows
+        while (newRow >= 0) {
+            newGrid[newRow] = new Color[WIDTH];
+            newRow--;
+        }
+
+        // Replace the grid
+        grid = newGrid;
+
+        return lines.size();
     }
 }
 

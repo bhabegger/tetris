@@ -3,6 +3,8 @@ package tech.habegger.tetris.controller;
 import tech.habegger.tetris.model.Board;
 import tech.habegger.tetris.model.Tetromino;
 
+import java.util.List;
+
 /**
  * Controls the game logic and state for Tetris.
  * Manages the current piece, board, and game flow.
@@ -21,7 +23,13 @@ public class GameController {
     
     /** Flag indicating if the game is over */
     private boolean gameOver;
-    
+
+    /** The current score */
+    private int score;
+
+    /** The number of lines cleared */
+    private int linesCleared;
+
     /**
      * Creates a new GameController and initializes the game.
      */
@@ -29,14 +37,17 @@ public class GameController {
         board = new Board();
         spawnNewPiece();
         gameOver = false;
+        score = 0;
+        linesCleared = 0;
     }
-    
+
     /**
      * Spawns a new tetromino piece at the top center of the board.
+     * Uses random piece selection.
      */
     public void spawnNewPiece() {
-        currentPiece = Tetromino.createLPiece(3, 0);
-        
+        currentPiece = Tetromino.createRandom(3, 0);
+
         // Check if the new piece collides with locked pieces (game over condition)
         if (board.isAtBottom(currentPiece)) {
             gameOver = true;
@@ -46,19 +57,56 @@ public class GameController {
     /**
      * Updates the game state by one tick.
      * Moves the current piece down, and locks it if it reaches the bottom.
+     * Clears completed lines and updates score.
      */
     public void tick() {
         if (gameOver) {
             return;
         }
-        
+
         if (board.isAtBottom(currentPiece)) {
-            // Lock the piece and spawn a new one
+            // Lock the piece
             board.lockPiece(currentPiece);
+
+            // Check for and clear completed lines
+            List<Integer> completedLines = board.findCompletedLines();
+            if (!completedLines.isEmpty()) {
+                int cleared = board.clearLines(completedLines);
+                linesCleared += cleared;
+                updateScore(cleared);
+            }
+
+            // Spawn a new piece
             spawnNewPiece();
         } else {
             // Move the piece down
             currentPiece.moveDown();
+        }
+    }
+
+    /**
+     * Updates the score based on the number of lines cleared.
+     * Scoring: 1 line = 100, 2 lines = 300, 3 lines = 500, 4 lines = 800
+     *
+     * @param lines the number of lines cleared
+     */
+    private void updateScore(int lines) {
+        switch (lines) {
+            case 1:
+                score += 100;
+                break;
+            case 2:
+                score += 300;
+                break;
+            case 3:
+                score += 500;
+                break;
+            case 4:
+                score += 800;
+                break;
+            default:
+                score += lines * 100;
+                break;
         }
     }
     
@@ -149,6 +197,26 @@ public class GameController {
         board.clear();
         spawnNewPiece();
         gameOver = false;
+        score = 0;
+        linesCleared = 0;
+    }
+
+    /**
+     * Gets the current score.
+     *
+     * @return the score
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * Gets the number of lines cleared.
+     *
+     * @return the lines cleared
+     */
+    public int getLinesCleared() {
+        return linesCleared;
     }
 }
 
