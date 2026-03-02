@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -193,6 +194,85 @@ class BoardTest {
 
         // Then
         assertFalse(isValid, "Piece should be invalid when overlapping locked piece");
+    }
+
+    @Test
+    @DisplayName("Should find completed lines")
+    void testFindCompletedLines() {
+        // Given - fill the bottom row completely
+        for (int col = 0; col < Board.WIDTH; col++) {
+            board.getGrid()[Board.HEIGHT - 1][col] = Color.RED;
+        }
+
+        // When
+        List<Integer> completedLines = board.findCompletedLines();
+
+        // Then
+        assertEquals(1, completedLines.size(), "Should find 1 completed line");
+        assertEquals(Board.HEIGHT - 1, completedLines.get(0), "Should be the bottom row");
+    }
+
+    @Test
+    @DisplayName("Should find no completed lines on empty board")
+    void testFindNoCompletedLines() {
+        // Given - empty board
+
+        // When
+        List<Integer> completedLines = board.findCompletedLines();
+
+        // Then
+        assertTrue(completedLines.isEmpty(), "Should find no completed lines");
+    }
+
+    @Test
+    @DisplayName("Should find multiple completed lines")
+    void testFindMultipleCompletedLines() {
+        // Given - fill bottom two rows
+        for (int row = Board.HEIGHT - 2; row < Board.HEIGHT; row++) {
+            for (int col = 0; col < Board.WIDTH; col++) {
+                board.getGrid()[row][col] = Color.BLUE;
+            }
+        }
+
+        // When
+        List<Integer> completedLines = board.findCompletedLines();
+
+        // Then
+        assertEquals(2, completedLines.size(), "Should find 2 completed lines");
+    }
+
+    @Test
+    @DisplayName("Should clear completed lines and shift rows down")
+    void testClearLines() {
+        // Given - fill bottom row and add a piece above it
+        for (int col = 0; col < Board.WIDTH; col++) {
+            board.getGrid()[Board.HEIGHT - 1][col] = Color.RED;
+        }
+        board.getGrid()[Board.HEIGHT - 2][0] = Color.BLUE;
+
+        List<Integer> linesToClear = List.of(Board.HEIGHT - 1);
+
+        // When
+        int cleared = board.clearLines(linesToClear);
+
+        // Then
+        assertEquals(1, cleared, "Should clear 1 line");
+        assertNull(board.getCell(Board.HEIGHT - 1, 1), "Bottom row should be empty after clear");
+        assertEquals(Color.BLUE, board.getCell(Board.HEIGHT - 1, 0),
+            "Blue piece should have shifted down");
+    }
+
+    @Test
+    @DisplayName("Should return 0 when clearing empty list")
+    void testClearNoLines() {
+        // Given
+        List<Integer> emptyList = List.of();
+
+        // When
+        int cleared = board.clearLines(emptyList);
+
+        // Then
+        assertEquals(0, cleared, "Should clear 0 lines");
     }
 }
 

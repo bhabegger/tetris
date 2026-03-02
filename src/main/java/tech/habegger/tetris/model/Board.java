@@ -1,6 +1,8 @@
 package tech.habegger.tetris.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the Tetris game board.
@@ -156,6 +158,67 @@ public class Board {
         }
 
         return true;
+    }
+
+    /**
+     * Finds all completed lines on the board.
+     * A line is complete when all cells in the row are filled.
+     *
+     * @return list of row indices that are complete (from top to bottom)
+     */
+    public List<Integer> findCompletedLines() {
+        List<Integer> completedLines = new ArrayList<>();
+
+        for (int row = 0; row < HEIGHT; row++) {
+            if (isLineComplete(row)) {
+                completedLines.add(row);
+            }
+        }
+
+        return completedLines;
+    }
+
+    /**
+     * Checks if a specific line is complete.
+     *
+     * @param row the row index to check
+     * @return true if all cells in the row are filled, false otherwise
+     */
+    private boolean isLineComplete(int row) {
+        for (int col = 0; col < WIDTH; col++) {
+            if (grid[row][col] == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Clears the specified lines and shifts rows above down.
+     *
+     * @param lines list of row indices to clear
+     * @return the number of lines cleared
+     */
+    public int clearLines(List<Integer> lines) {
+        if (lines.isEmpty()) {
+            return 0;
+        }
+
+        // Create a mutable copy and sort in descending order to clear from bottom to top
+        List<Integer> sortedLines = new ArrayList<>(lines);
+        sortedLines.sort((a, b) -> b - a);
+
+        for (int line : sortedLines) {
+            // Remove the completed line
+            for (int row = line; row > 0; row--) {
+                // Shift all rows above down by one
+                grid[row] = grid[row - 1].clone();
+            }
+            // Clear the top row
+            grid[0] = new Color[WIDTH];
+        }
+
+        return lines.size();
     }
 }
 
