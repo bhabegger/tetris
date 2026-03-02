@@ -4,6 +4,7 @@ import tech.habegger.tetris.controller.GameController;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -19,6 +20,9 @@ public class MainFrame extends JFrame {
 
     /** The game panel that displays the game */
     private GamePanel gamePanel;
+
+    /** The score panel that displays statistics */
+    private ScorePanel scorePanel;
 
     /** The game controller */
     private GameController gameController;
@@ -36,13 +40,18 @@ public class MainFrame extends JFrame {
         setTitle("Tetris");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        setLayout(new BorderLayout());
 
         // Create game controller
         gameController = new GameController();
 
-        // Create and add the game panel
+        // Create and add the game panel (center)
         gamePanel = new GamePanel(gameController);
-        add(gamePanel);
+        add(gamePanel, BorderLayout.CENTER);
+
+        // Create and add the score panel (right)
+        scorePanel = new ScorePanel(gameController);
+        add(scorePanel, BorderLayout.EAST);
 
         // Add keyboard listener for controls
         addKeyListener(new KeyAdapter() {
@@ -52,19 +61,23 @@ public class MainFrame extends JFrame {
                     case KeyEvent.VK_LEFT:
                         gameController.moveLeft();
                         gamePanel.repaint();
+                        scorePanel.repaint();
                         break;
                     case KeyEvent.VK_RIGHT:
                         gameController.moveRight();
                         gamePanel.repaint();
+                        scorePanel.repaint();
                         break;
                     case KeyEvent.VK_DOWN:
                         gameController.softDrop();
                         gamePanel.repaint();
+                        scorePanel.repaint();
                         break;
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_X:
                         gameController.rotatePiece();
                         gamePanel.repaint();
+                        scorePanel.repaint();
                         break;
                 }
             }
@@ -75,6 +88,10 @@ public class MainFrame extends JFrame {
             if (!gameController.isGameOver()) {
                 gameController.tick();
                 gamePanel.repaint();
+                scorePanel.repaint();
+            } else {
+                // Update score panel one last time to show game over
+                scorePanel.repaint();
             }
         });
 
@@ -104,6 +121,15 @@ public class MainFrame extends JFrame {
      */
     public GameController getGameController() {
         return gameController;
+    }
+
+    /**
+     * Gets the score panel.
+     *
+     * @return the score panel
+     */
+    public ScorePanel getScorePanel() {
+        return scorePanel;
     }
 }
 
