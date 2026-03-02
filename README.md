@@ -5,6 +5,8 @@
 
 A classic Tetris game implementation in Java using Swing, built with test-driven development and modern CI/CD practices.
 
+![Tetris Game Screenshot](screenshot.png)
+
 ## Features
 
 - ✅ All 7 classic Tetris pieces (I, O, T, S, Z, J, L)

@@ -1,5 +1,9 @@
 # Tetris - User Guide
 
+![Tetris Game Screenshot](screenshot.png)
+
+*Classic Tetris gameplay with real-time scoreboard*
+
 ## Table of Contents
 - [Getting Started](#getting-started)
 - [Game Interface](#game-interface)
