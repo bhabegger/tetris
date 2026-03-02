@@ -44,14 +44,28 @@ public class MainFrame extends JFrame {
         gamePanel = new GamePanel(gameController);
         add(gamePanel);
 
-        // Add keyboard listener for rotation
+        // Add keyboard listener for controls
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_X) {
-                    // Rotate the piece
-                    gameController.rotatePiece();
-                    gamePanel.repaint();
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        gameController.moveLeft();
+                        gamePanel.repaint();
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        gameController.moveRight();
+                        gamePanel.repaint();
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        gameController.softDrop();
+                        gamePanel.repaint();
+                        break;
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_X:
+                        gameController.rotatePiece();
+                        gamePanel.repaint();
+                        break;
                 }
             }
         });

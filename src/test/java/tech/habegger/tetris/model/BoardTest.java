@@ -139,5 +139,60 @@ class BoardTest {
         assertNull(board.getCell(Board.HEIGHT, 0), "Should return null for row >= HEIGHT");
         assertNull(board.getCell(0, Board.WIDTH), "Should return null for col >= WIDTH");
     }
+
+    @Test
+    @DisplayName("Should validate piece in valid position")
+    void testIsValidPosition() {
+        // Given
+        Tetromino piece = Tetromino.createLPiece(3, 5);
+
+        // When
+        boolean isValid = board.isValidPosition(piece);
+
+        // Then
+        assertTrue(isValid, "Piece should be valid in center of board");
+    }
+
+    @Test
+    @DisplayName("Should detect invalid position - left wall")
+    void testIsInvalidPositionLeftWall() {
+        // Given
+        Tetromino piece = Tetromino.createLPiece(-3, 5); // Far enough left to be invalid
+
+        // When
+        boolean isValid = board.isValidPosition(piece);
+
+        // Then
+        assertFalse(isValid, "Piece should be invalid when outside left wall");
+    }
+
+    @Test
+    @DisplayName("Should detect invalid position - right wall")
+    void testIsInvalidPositionRightWall() {
+        // Given
+        Tetromino piece = Tetromino.createLPiece(8, 5);
+
+        // When
+        boolean isValid = board.isValidPosition(piece);
+
+        // Then
+        assertFalse(isValid, "Piece should be invalid when outside right wall");
+    }
+
+    @Test
+    @DisplayName("Should detect invalid position - overlapping locked piece")
+    void testIsInvalidPositionOverlap() {
+        // Given
+        Tetromino piece1 = Tetromino.createLPiece(3, 17);
+        board.lockPiece(piece1);
+
+        Tetromino piece2 = Tetromino.createLPiece(3, 17);
+
+        // When
+        boolean isValid = board.isValidPosition(piece2);
+
+        // Then
+        assertFalse(isValid, "Piece should be invalid when overlapping locked piece");
+    }
 }
 
